@@ -1,0 +1,16 @@
+node_modules/
+dist/
+build/
+.env
+.env.local
+*.log
+api/storage/
+.logs/
+coverage/
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.tsbuildinfo
+.env.bak
+*.env.bak

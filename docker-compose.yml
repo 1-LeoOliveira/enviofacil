@@ -1,0 +1,97 @@
+name: envio-facil
+
+services:
+  banco:
+    image: mysql:8.0
+    container_name: envio-facil-banco
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+      - --default-time-zone=+00:00
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-raiz_local}
+      MYSQL_DATABASE: ${DB_NAME:-envio_facil}
+      MYSQL_USER: ${DB_USER:-envio_facil}
+      MYSQL_PASSWORD: ${DB_PASSWORD:-envio_facil}
+      TZ: UTC
+    volumes:
+      - dados-mysql:/var/lib/mysql
+    ports:
+      # Exposto apenas para inspeção local; em produção não publicar.
+      - '${DB_PORT_HOST:-3307}:3306'
+    healthcheck:
+      test: ['CMD', 'mysqladmin', 'ping', '-h', '127.0.0.1', '-u', 'root', '-p${DB_ROOT_PASSWORD:-raiz_local}']
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 30s
+    restart: unless-stopped
+
+  api:
+    build:
+      context: .
+      dockerfile: api/Dockerfile
+    container_name: envio-facil-api
+    depends_on:
+      banco:
+        condition: service_healthy
+    environment:
+      NODE_ENV: production
+      PORT: 4000
+      TZ: UTC
+      DB_HOST: banco
+      DB_PORT: 3306
+      DB_NAME: ${DB_NAME:-envio_facil}
+      DB_USER: ${DB_USER:-envio_facil}
+      DB_PASSWORD: ${DB_PASSWORD:-envio_facil}
+      APP_PUBLIC_URL: ${APP_PUBLIC_URL:-http://localhost:8080}
+      CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:8080}
+      JWT_SECRET: ${JWT_SECRET:?defina JWT_SECRET no arquivo .env}
+      DATA_ENCRYPTION_KEY: ${DATA_ENCRYPTION_KEY:?defina DATA_ENCRYPTION_KEY no arquivo .env}
+      CPF_HASH_KEY: ${CPF_HASH_KEY:?defina CPF_HASH_KEY no arquivo .env}
+      FILE_SIGNING_KEY: ${FILE_SIGNING_KEY:?defina FILE_SIGNING_KEY no arquivo .env}
+      STORAGE_DIR: /app/storage
+      APP_TIMEZONE: ${APP_TIMEZONE:-America/Sao_Paulo}
+      CIDADAO_PROVIDER: ${CIDADAO_PROVIDER:-demo}
+      CIDADAO_API_URL: ${CIDADAO_API_URL:-}
+      CIDADAO_API_TOKEN: ${CIDADAO_API_TOKEN:-}
+      SEED_DEMO: ${SEED_DEMO:-true}
+      LOGIN_DESABILITADO: ${LOGIN_DESABILITADO:-false}
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+      TRUST_PROXY: 'true'
+    volumes:
+      # Documentos cifrados. Volume privado, fora da árvore web.
+      - documentos:/app/storage
+    expose:
+      - '4000'
+    ports:
+      - '${API_PORT_HOST:-4000}:4000'
+    restart: unless-stopped
+
+  web:
+    build:
+      context: .
+      dockerfile: web/Dockerfile
+    container_name: envio-facil-web
+    depends_on:
+      - api
+    ports:
+      - '${WEB_PORT_HOST:-8080}:80'
+    restart: unless-stopped
+
+  # Inspeção do banco durante o desenvolvimento: docker compose --profile ferramentas up
+  adminer:
+    image: adminer:4.8.1
+    container_name: envio-facil-adminer
+    profiles: ['ferramentas']
+    depends_on:
+      - banco
+    environment:
+      ADMINER_DEFAULT_SERVER: banco
+    ports:
+      - '${ADMINER_PORT_HOST:-8081}:8080'
+    restart: unless-stopped
+
+volumes:
+  dados-mysql:
+  documentos:

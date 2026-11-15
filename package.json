@@ -1,0 +1,36 @@
+{
+  "name": "envio-facil",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Envio Fácil - troca digital de documentos no atendimento presencial do DETRAN/SC",
+  "scripts": {
+    "instalar": "npm --prefix api install && npm --prefix web install",
+    "app:iniciar": "powershell -ExecutionPolicy Bypass -File scripts/app-local.ps1 iniciar",
+    "app:rede": "powershell -ExecutionPolicy Bypass -File scripts/app-local.ps1 rede",
+    "app:local": "powershell -ExecutionPolicy Bypass -File scripts/app-local.ps1 local",
+    "app:parar": "powershell -ExecutionPolicy Bypass -File scripts/app-local.ps1 parar",
+    "app:status": "powershell -ExecutionPolicy Bypass -File scripts/app-local.ps1 status",
+    "app:logs": "powershell -ExecutionPolicy Bypass -File scripts/app-local.ps1 logs",
+    "dev:api": "npm --prefix api run dev",
+    "dev:web": "npm --prefix web run dev",
+    "banco:instalar": "powershell -ExecutionPolicy Bypass -File scripts/mysql-local.ps1 instalar",
+    "banco:iniciar": "powershell -ExecutionPolicy Bypass -File scripts/mysql-local.ps1 iniciar",
+    "banco:parar": "powershell -ExecutionPolicy Bypass -File scripts/mysql-local.ps1 parar",
+    "banco:status": "powershell -ExecutionPolicy Bypass -File scripts/mysql-local.ps1 status",
+    "banco:console": "powershell -ExecutionPolicy Bypass -File scripts/mysql-local.ps1 console",
+    "banco:remover": "powershell -ExecutionPolicy Bypass -File scripts/mysql-local.ps1 remover",
+    "migrar": "npm --prefix api run migrate",
+    "semear": "npm --prefix api run seed",
+    "subir": "docker compose up -d --build",
+    "parar": "docker compose down",
+    "parar:tudo": "docker compose down -v",
+    "logs": "docker compose logs -f api web",
+    "ferramentas": "docker compose --profile ferramentas up -d adminer",
+    "teste:unitario": "npm --prefix api test",
+    "teste:integracao": "node scripts/teste-integracao.mjs",
+    "typecheck": "npm --prefix api run typecheck && npm --prefix web run typecheck"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

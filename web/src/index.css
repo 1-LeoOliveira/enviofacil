@@ -1,0 +1,116 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    color-scheme: light;
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    @apply bg-slate-100 text-slate-800 font-sans antialiased;
+    margin: 0;
+  }
+
+  /* Alvos de toque confortáveis no celular do cidadão. */
+  button,
+  a,
+  input,
+  select,
+  textarea {
+    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-detran-400 focus-visible:ring-offset-2;
+  }
+}
+
+@layer components {
+  .cartao {
+    @apply rounded-xl border border-slate-200 bg-white shadow-painel;
+  }
+
+  .cartao-corpo {
+    @apply p-4 sm:p-5;
+  }
+
+  .botao {
+    @apply inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-semibold
+           transition disabled:cursor-not-allowed disabled:opacity-60;
+  }
+
+  .botao-primario {
+    @apply botao bg-detran-700 text-white hover:bg-detran-800 active:bg-detran-900;
+  }
+
+  .botao-secundario {
+    @apply botao border border-detran-200 bg-white text-detran-700 hover:bg-detran-50;
+  }
+
+  .botao-neutro {
+    @apply botao border border-slate-200 bg-white text-slate-600 hover:bg-slate-50;
+  }
+
+  .botao-perigo {
+    @apply botao border border-rose-200 bg-white text-rose-700 hover:bg-rose-50;
+  }
+
+  .botao-sucesso {
+    @apply botao bg-acento-500 text-white hover:bg-acento-600;
+  }
+
+  .botao-grande {
+    @apply px-5 py-3 text-base;
+  }
+
+  .campo {
+    @apply w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-base text-slate-800
+           placeholder:text-slate-400 disabled:bg-slate-50;
+  }
+
+  .rotulo {
+    @apply mb-1.5 block text-sm font-medium text-slate-700;
+  }
+
+  .etiqueta {
+    @apply inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold;
+  }
+
+  .titulo-secao {
+    @apply text-lg font-semibold text-detran-900;
+  }
+
+  .tabela {
+    @apply w-full border-collapse text-sm;
+  }
+
+  .tabela th {
+    @apply border-b border-slate-200 px-3 py-2.5 text-left text-xs font-semibold uppercase tracking-wide text-slate-500;
+  }
+
+  .tabela td {
+    @apply border-b border-slate-100 px-3 py-3 align-middle text-slate-700;
+  }
+
+  .link {
+    @apply font-medium text-detran-700 underline-offset-2 hover:underline;
+  }
+}
+
+/* Faixa de ambiente de demonstração: precisa ser impossível de confundir. */
+.faixa-demo {
+  background-image: repeating-linear-gradient(
+    45deg,
+    rgba(245, 158, 11, 0.18),
+    rgba(245, 158, 11, 0.18) 10px,
+    rgba(245, 158, 11, 0.08) 10px,
+    rgba(245, 158, 11, 0.08) 20px
+  );
+}
+
+@media print {
+  .nao-imprimir {
+    display: none !important;
+  }
+}
